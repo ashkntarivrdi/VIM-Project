@@ -50,16 +50,27 @@ void FindCommand()
 
 void cat() 
 {
+    char x;
+    char *new_address;
+
     scanf(" %[^ ]s", command_extension);
-    scanf(" %[^\n]s", address);
-    // printf("%s\n", address);
-    char *new_address = address + 1;
-    // printf("%s\n", result);
 
     if(strcmp(command_extension, "--file") != 0) {
         printf("Invalid Command!\nSimply type <--help> for more information.\n");
         return;
     }
+
+    getchar();
+    scanf("%c", &x);
+    scanf(" %[^\n]s", address);
+
+    if(x == '/') {
+        new_address = address;
+    }else if(x == '"') {
+        new_address = address + 1;
+        new_address[strlen(new_address) - 1] = '\0';
+    }
+
 
     // int str[MAX];
     char str;
@@ -83,29 +94,35 @@ void createfile()
 {
     char *directory;
     char *next_directory;
+    char *new_address;
+    char x;
     int counter = 0;
     int result;
 
     scanf(" %[^ ]s", command_extension);
+
     if(strcmp(command_extension, "--file") != 0) {
         printf("Invalid Command!\nSimply type <--help> for more information.\n");
         return;
-    }    
+    }
 
-    scanf("%[^\n]s", address);    
-    
-    char *new_address = address + 1;
+    getchar();
+    scanf("%c", &x);
+    scanf(" %[^\n]s", address);
+
+    if(x == '/') {
+        new_address = address;
+    }else if(x == '"') {
+        new_address = address + 1;
+        new_address[strlen(new_address) - 1] = '\0';
+    }
 
     directory = strtok(new_address, "/");
-    
-    if(strcmp((char*)directory, "root") != 0) {
-        printf("Your address must start with root!\n");
-        return;
-    }
 
     // printf("%s\n", directory);
     while(directory != NULL)
     {
+        printf("dir = %s\n", directory);
         counter++;
         next_directory = strtok(NULL, "/");
         if(next_directory == NULL) {
@@ -115,16 +132,15 @@ void createfile()
             }
             filepointer = fopen(directory, "a");
             fclose(directory);
+            printf("File created successfully!\n");
             break;
         }
-        result = mkdir(directory); 
+        mkdir(directory); 
         chdir(directory);
 
         // mkdir(directory);
         strcpy(directory, next_directory);
     }
-    if(!result)
-    printf("File created successfully!\n");
     // printf("count = %d\n", counter);
     
     while(counter != 1)
