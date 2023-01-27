@@ -13,7 +13,7 @@
 FILE *filepointer;
 char command[MAX];
 char command_extension[MAX];
-char* address[MAX];
+char address[MAX];
 
 void cat();
 void createfile();
@@ -24,7 +24,6 @@ int main()
 {
     while(1)
     {
-    chdir("root");
     scanf("%s", command);
     FindCommand();
     }
@@ -52,7 +51,10 @@ void FindCommand()
 void cat() 
 {
     scanf(" %[^ ]s", command_extension);
-    scanf(" /root/%[^\n]s", address);
+    scanf(" %[^\n]s", address);
+    // printf("%s\n", address);
+    char *new_address = address + 1;
+    // printf("%s\n", result);
 
     if(strcmp(command_extension, "--file") != 0) {
         printf("Invalid Command!\nSimply type <--help> for more information.\n");
@@ -61,7 +63,7 @@ void cat()
 
     // int str[MAX];
     char str;
-    filepointer = fopen(address , "r");
+    filepointer = fopen(new_address , "r");
     if(filepointer != NULL) {
         str = fgetc(filepointer);
         while(str != EOF) {
@@ -81,23 +83,25 @@ void createfile()
 {
     char *directory;
     char *next_directory;
-    char *new_address;
     int counter = 0;
     int result;
-    
 
     scanf(" %[^ ]s", command_extension);
     if(strcmp(command_extension, "--file") != 0) {
-        printf("Invalid Command!\nSimply type <--help> for more information.");
+        printf("Invalid Command!\nSimply type <--help> for more information.\n");
         return;
     }    
 
     scanf("%[^\n]s", address);    
-    // strcpy(cpy_address, address);
+    
+    char *new_address = address + 1;
 
-    directory = strtok(address, "/");
-    directory = strtok(NULL, "/");
-    directory = strtok(NULL, "/");
+    directory = strtok(new_address, "/");
+    
+    if(strcmp((char*)directory, "root") != 0) {
+        printf("Your address must start with root!\n");
+        return;
+    }
 
     // printf("%s\n", directory);
     while(directory != NULL)
