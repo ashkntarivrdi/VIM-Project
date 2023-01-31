@@ -28,7 +28,10 @@ char address[MAX];
 void cat();
 void createfile();
 void insertstr();
+void removestr();
 void FindCommand();
+
+// char *read_file(char *filename);
 
 
 int main()
@@ -48,6 +51,54 @@ int main()
     return 0;    
 }
 
+// char *read_file(char *filename)
+// {
+//     FILE *file;
+
+//     file = fopen(filename, "r");
+
+//     fseek(file, 0, SEEK_END);
+//     int length = ftell(file);
+//     fseek(file, 0, SEEK_SET);
+
+//     char *string = malloc(sizeof(char) * (length + 1));
+
+//     char c;
+//     int i = 0;
+
+//     while((c = fgetc(file)) != EOF)
+//     {
+//         string[i] = c;
+//         i++;
+//     }
+//     string[i] = '\0';
+    
+//     fclose(file);
+
+//     return string;
+// }
+
+// char *make_it_two_dimension(char *string)
+// {
+//     char new_string[MAX_LINE][MAX_CONTENT];
+    
+//     for(int i = 0; i < MAX_LINE; i++)
+//     {
+//         for(int j = 0; j < MAX_CONTENT; j++)
+//         {
+//             if(string[j] == '\n') {
+//                 new_string[i][j] = string[j];
+//                 break;
+//             } else if(string[j] == EOF) {
+//                 return;
+//             } else {
+//                 new_string[i][j] = string[j];
+//             }
+//         }
+//     }
+//     return new_string;
+// }
+
 void FindCommand()
 {
     if(!strcmp(command, "cat")) {
@@ -60,6 +111,10 @@ void FindCommand()
     }
     else if(!strcmp(command, "insertstr")) {
         insertstr();
+        return;
+    }
+    else if(!strcmp(command, "removestr")) {
+        removestr();
         return;
     }
     else {
@@ -309,6 +364,237 @@ void insertstr()
 
     int result = remove("temp");
     if(!result) {
-        printf("Operation done successfully!\n");
+        printf("Text Inserted Successfully!\n");
+    }
+}
+
+
+void removestr()
+{
+    FILE *temp;
+    char *new_address;
+    char x;
+    int row, column, current_row = 1, current_column = 0, size;
+
+    scanf(" %[^ ]s", command_extension);
+
+    if(strcmp(command_extension, "--file") != 0) {
+        printf("Invalid Command!\nTry removestr --file!\n");
+        return;
+    }
+
+    getchar();
+    scanf("%c", &x);
+
+    if(x == '/') {
+        scanf("%s", address);
+        new_address = address;
+        x = '\0';
+    }else if(x == '"') {
+        scanf("%[^\"]s", address);
+        new_address = address + 1;
+        x = '\0';
+    }
+
+    getchar();
+    scanf("%[^ ]s", command_extension); 
+
+    if(strcmp(command_extension, "--pos") != 0) {
+        printf("Invalid Command!\nTry removestr --file or --pos!\n");
+        return;
+    }
+
+    scanf("%d:%d", &row, &column);
+
+    getchar();
+    scanf("%[^ ]s", command_extension);   
+
+    if(strcmp(command_extension, "-size") != 0) {
+        printf("Invalid Command!\nTry removestr --file or --pos or -size!\n");
+        return;
+    } 
+
+    scanf("%d", &size);
+
+    getchar();
+    scanf("%[^\n]s", command_extension);
+    
+    filepointer = fopen(new_address, "r");
+    if(filepointer == NULL) {
+        printf("File Doesn't Exist!\n");
+        return;
+    }
+    temp = fopen("temp", "w");
+    
+    if(!strcmp(command_extension, "-b")) {
+
+        while(current_row != row) 
+        {       
+            x = fgetc(filepointer);
+            if(x == '\n') {
+                current_row++;
+            }
+            if(x == EOF) {
+                printf("Out Of Range Position!\n");
+                fclose(filepointer);
+                fclose(temp);
+                remove("temp");
+                return;
+            }            
+        }
+
+        while(current_column != column)
+        {
+            x = fgetc(filepointer);
+            if(x == EOF || x == '\n') {
+                printf("Out Of Range Position!\n");
+                fclose(filepointer);
+                fclose(temp);
+                remove("temp");
+                return;
+            }
+            current_column++;
+        }
+
+        for(int i = size; i > 0; i--)
+        {
+            if(current_column == 0 && current_row != 1) {
+                current_row--;
+                fclose(filepointer);
+                filepointer = fopen(new_address, "r");
+                
+                row = current_row;
+                current_row = 1;
+                while(current_row != row) 
+                {       
+                    x = fgetc(filepointer);
+                    if(x == '\n') {
+                        current_row++;
+                    }
+                }
+                while((x = fgetc(filepointer)) != '\n') {
+                    current_column++;
+                }
+            } else {
+                current_column--;
+            }
+            if(current_column < 0) {
+                printf("Out Of Range Position!\n");
+                fclose(filepointer);
+                fclose(temp);
+                remove("temp");
+                return;
+            }
+        }
+
+        row = current_row;
+        column = current_column;
+        current_column = 0;
+        current_row = 1;
+
+        fclose(filepointer);
+        fclose(temp);
+
+        filepointer = fopen(new_address, "r");
+        temp = fopen("temp", "w");
+
+        while(current_row != row) 
+        {    
+            x = fgetc(filepointer);
+            if(x == '\n') {
+                current_row++;
+            }
+            if(x == EOF) {
+                x = '\n';
+            }
+            fputc(x, temp);
+        }
+
+        while(current_column != column)
+        {
+            x = fgetc(filepointer);
+            if(x == EOF) {
+                x = ' ';
+            }
+            fputc(x, temp);
+            current_column++;
+        }
+
+        while(current_column != column + size) 
+        {
+            x = fgetc(filepointer);
+            current_column++;
+        }
+
+        while((x = fgetc(filepointer)) != EOF)
+        {
+            fputc(x, temp);
+        }
+
+        fclose(filepointer);
+        fclose(temp);
+
+    }else if(!strcmp(command_extension, "-f")) {
+        while(current_row != row - 1) 
+        {    
+            x = fgetc(filepointer);
+            if(x == '\n') {
+                current_row++;
+            }
+            if(x == EOF) {
+                x = '\n';
+            }
+            fputc(x, temp);
+        }
+
+        while(current_column != column)
+        {
+            x = fgetc(filepointer);
+            if(x == EOF) {
+                x = ' ';
+            }
+            fputc(x, temp);
+            current_column++;
+        }
+
+        while(current_column != column + size) 
+        {
+            x = fgetc(filepointer);
+            current_column++;
+        }
+
+        while((x = fgetc(filepointer)) != EOF)
+        {
+            fputc(x, temp);
+        }
+
+        fclose(filepointer);
+        fclose(temp);
+
+    }else {
+        printf("Invalid Command!\nTry insertstr --file or --pos or -size or -b/-f\n");
+        fclose(filepointer);
+        fclose(temp);
+        remove("temp");
+        return;
+    }
+
+    filepointer = fopen(new_address, "w");
+    temp = fopen("temp", "r");
+
+    //copy temp into main file
+    x = fgetc(temp);
+    while(x != EOF)
+    {
+        fputc(x, filepointer);
+        x = fgetc(temp);
+    }
+
+    fclose(temp);
+    fclose(filepointer);
+
+    int result = remove("temp");
+    if(!result) {
+        printf("Text Removed Successfully!\n");
     }
 }
