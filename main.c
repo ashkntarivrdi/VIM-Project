@@ -16,14 +16,14 @@
 #endif
 
 
-#define MAX 10000
 #define MAX_CONTENT 2048
 #define MAX_LINE 2048
+#define MAX_ADD 1024
 
 FILE *filepointer;
-char command[MAX];
-char command_extension[MAX];
-char address[MAX];
+char command[MAX_ADD];
+char command_extension[MAX_ADD];
+char address[MAX_ADD];
 
 void cat();
 void createfile();
@@ -32,6 +32,7 @@ void removestr();
 void copystr();
 void cutstr();
 void pastestr();
+void compare();
 void FindCommand();
 
 
@@ -83,6 +84,10 @@ void FindCommand()
         pastestr();
         return;
     }
+    else if(!strcmp(command,"compare")) {
+        compare();
+        return;
+    }
     else {
         printf("Invalid Command!\nSimply type <--help> for more information.\n");
         return;
@@ -93,12 +98,13 @@ void FindCommand()
 void cat() 
 {
     char x;
-    char *new_address;
+    char *new_address = malloc(sizeof(char) * MAX_ADD);
 
     scanf(" %[^ ]s", command_extension);
 
     if(strcmp(command_extension, "--file") != 0) {
         printf("Invalid Command!\nTry cat --file!\n");
+        free(new_address);
         return;
     }
 
@@ -126,16 +132,18 @@ void cat()
         printf("\n");
     }else {
         printf("No Such A File!\n");
+        free(new_address);
         return;
     }
     fclose(filepointer);
+    free(new_address);
 }
 
 void createfile()
 {
-    char *directory;
-    char *next_directory;
-    char *new_address;
+    char *directory = malloc(sizeof(char) * MAX_ADD);
+    char *next_directory = malloc(sizeof(char) * MAX_ADD);
+    char *new_address = malloc(sizeof(char) * MAX_ADD);
     char x;
     int counter = 0;
     int result;
@@ -144,6 +152,9 @@ void createfile()
 
     if(strcmp(command_extension, "--file") != 0) {
         printf("Invalid Command!\nTry createfile --file!\n");
+        free(directory);
+        free(next_directory);
+        free(new_address);
         return;
     }
 
@@ -169,6 +180,9 @@ void createfile()
         if(next_directory == NULL) {
             if(!access(directory, F_OK)) {
                 printf("File already exist!\n");
+                free(directory);
+                free(next_directory);
+                free(new_address);
                 return;
             }
             filepointer = fopen(directory, "a");
@@ -189,15 +203,17 @@ void createfile()
         chdir("..");
         counter--;
     }
-    return;
+    free(directory);
+    free(next_directory);
+    free(new_address);
 }
 
 void insertstr() 
 {
     FILE *temp;
-    char *new_address;
+    char *new_address = malloc(sizeof(char) * MAX_ADD);
     char str[MAX_LINE];
-    char *new_str;
+    char *new_str = malloc(sizeof(char) * MAX_CONTENT);
     char x;
     int row, column, current_row = 0, current_column = 0;
 
@@ -206,6 +222,8 @@ void insertstr()
 
     if(strcmp(command_extension, "--file") != 0) {
         printf("Invalid Command!\nTry insertstr --file or --str or --pos!\n");
+        free(new_address);
+        free(new_str);
         return;
     }
 
@@ -231,6 +249,8 @@ void insertstr()
 
     if(strcmp(command_extension, "--str") != 0) {
         printf("Invalid Command!\nTry insertstr --file or --str or --pos!\n");
+        free(new_address);
+        free(new_str);
         return;
     }
 
@@ -257,6 +277,8 @@ void insertstr()
 
     if(strcmp(command_extension, "--pos") != 0) {
         printf("Invalid Command!\nTry insertstr --file or --str or --pos!\n");
+        free(new_address);
+        free(new_str);
         return;
     }
 
@@ -265,6 +287,8 @@ void insertstr()
     filepointer = fopen(new_address, "r");
     if(filepointer == NULL) {
         printf("File Doesn't Exist!\n");
+        free(new_address);
+        free(new_str);
         return;
     }
     temp = fopen("temp", "w");
@@ -331,12 +355,14 @@ void insertstr()
     if(!result) {
         printf("Text Inserted Successfully!\n");
     }
+    free(new_address);
+    free(new_str);
 }
 
 void removestr()
 {
     FILE *temp;
-    char *new_address;
+    char *new_address = malloc(sizeof(char) * MAX_ADD);
     char x;
     int row, column, current_row = 1, current_column = 0, size;
 
@@ -344,6 +370,7 @@ void removestr()
 
     if(strcmp(command_extension, "--file") != 0) {
         printf("Invalid Command!\nTry removestr --file!\n");
+        free(new_address);
         return;
     }
 
@@ -365,6 +392,7 @@ void removestr()
 
     if(strcmp(command_extension, "--pos") != 0) {
         printf("Invalid Command!\nTry removestr --file or --pos!\n");
+        free(new_address);    
         return;
     }
 
@@ -375,6 +403,7 @@ void removestr()
 
     if(strcmp(command_extension, "-size") != 0) {
         printf("Invalid Command!\nTry removestr --file or --pos or -size!\n");
+        free(new_address);
         return;
     } 
 
@@ -386,6 +415,7 @@ void removestr()
     filepointer = fopen(new_address, "r");
     if(filepointer == NULL) {
         printf("File Doesn't Exist!\n");
+        free(new_address);
         return;
     }
     temp = fopen("temp", "w");
@@ -403,6 +433,7 @@ void removestr()
                 fclose(filepointer);
                 fclose(temp);
                 remove("temp");
+                free(new_address);
                 return;
             }            
         }
@@ -415,6 +446,7 @@ void removestr()
                 fclose(filepointer);
                 fclose(temp);
                 remove("temp");
+                free(new_address);
                 return;
             }
             current_column++;
@@ -447,6 +479,7 @@ void removestr()
                 fclose(filepointer);
                 fclose(temp);
                 remove("temp");
+                free(new_address);
                 return;
             }
         }
@@ -542,6 +575,7 @@ void removestr()
         fclose(filepointer);
         fclose(temp);
         remove("temp");
+        free(new_address);
         return;
     }
 
@@ -563,13 +597,14 @@ void removestr()
     if(!result) {
         printf("Text Removed Successfully!\n");
     }
+
+    free(new_address);
 }
-/////////////////////////////////////////////////////////////////////////////////
 
 void copystr() 
 {
     FILE *temp;
-    char *new_address;
+    char *new_address = malloc(sizeof(char) * MAX_ADD);
     char x;
     int row, column, current_row = 1, current_column = 0, size;
         
@@ -577,6 +612,7 @@ void copystr()
 
     if(strcmp(command_extension, "--file") != 0) {
         printf("Invalid Command!\nTry copystr --file!\n");
+        free(new_address);
         return;
     }
     // printf("comm ext : i%si\n", command_extension);
@@ -602,6 +638,7 @@ void copystr()
 
     if(strcmp(command_extension, "--pos") != 0) {
         printf("Invalid Command!\nTry copystr --file or --pos!\n");
+        free(new_address);
         return;
     }
 
@@ -613,6 +650,7 @@ void copystr()
 
     if(strcmp(command_extension, "-size") != 0) {
         printf("Invalid Command!\nTry copystr --file or --pos or -size!\n");
+        free(new_address);
         return;
     } 
 
@@ -627,6 +665,7 @@ void copystr()
     filepointer = fopen(new_address, "r");
     if(filepointer == NULL) {
         printf("File Doesn't Exist!\n");
+        free(new_address);
         return;
     }
     temp = fopen("TempCopy", "w");
@@ -644,6 +683,7 @@ void copystr()
                 fclose(filepointer);
                 fclose(temp);
                 remove("temp");
+                free(new_address);
                 return;
             }            
         }
@@ -656,6 +696,7 @@ void copystr()
                 fclose(filepointer);
                 fclose(temp);
                 remove("temp");
+                free(new_address);
                 return;
             }
             current_column++;
@@ -688,6 +729,7 @@ void copystr()
                 fclose(filepointer);
                 fclose(temp);
                 remove("temp");
+                free(new_address);
                 return;
             }
         }
@@ -743,6 +785,8 @@ void copystr()
                 fclose(filepointer);
                 fclose(temp);
                 remove("temp");
+                free(new_address);
+                return;
             }
         }
 
@@ -754,6 +798,8 @@ void copystr()
                 fclose(filepointer);
                 fclose(temp);
                 remove("temp");
+                free(new_address);
+                return;
             }
             current_column++;
         }
@@ -774,14 +820,17 @@ void copystr()
         fclose(filepointer);
         fclose(temp);
         remove("temp");
+        free(new_address);
         return;
     }
+    
+    free(new_address);
 }
 
 void cutstr()
 {
     FILE *TempCopy, *temp;
-    char *new_address;
+    char *new_address = malloc(sizeof(char) * MAX_ADD);
     char x;
     int row, column, current_row = 1, current_column = 0, size;
         
@@ -789,6 +838,7 @@ void cutstr()
 
     if(strcmp(command_extension, "--file") != 0) {
         printf("Invalid Command!\nTry cutstr --file!\n");
+        free(new_address);
         return;
     }
     // printf("comm ext : i%si\n", command_extension);
@@ -814,6 +864,7 @@ void cutstr()
 
     if(strcmp(command_extension, "--pos") != 0) {
         printf("Invalid Command!\nTry cutstr --file or --pos!\n");
+        free(new_address);
         return;
     }
 
@@ -825,6 +876,7 @@ void cutstr()
 
     if(strcmp(command_extension, "-size") != 0) {
         printf("Invalid Command!\nTry cutstr --file or --pos or -size!\n");
+        free(new_address);
         return;
     } 
 
@@ -839,6 +891,7 @@ void cutstr()
     filepointer = fopen(new_address, "r");
     if(filepointer == NULL) {
         printf("File Doesn't Exist!\n");
+        free(new_address);
         return;
     }
     TempCopy = fopen("TempCopy", "w");
@@ -859,6 +912,7 @@ void cutstr()
                 fclose(temp);
                 remove("temp");
                 remove("TempCopy");
+                free(new_address);
                 return;
             }            
         }
@@ -873,6 +927,7 @@ void cutstr()
                 fclose(temp);
                 remove("temp");
                 remove("TempCopy");
+                free(new_address);
                 return;
             }
             current_column++;
@@ -907,6 +962,7 @@ void cutstr()
                 fclose(temp);
                 remove("temp");
                 remove("TempCopy");
+                free(new_address);
                 return;
             }
         }
@@ -1046,15 +1102,17 @@ void cutstr()
         fclose(temp);
         remove("temp");
         remove("TempCopy");
+        free(new_address);
         return;
     }
+    free(new_address);
 }
 
 void pastestr()
 {
     FILE *temp;
     FILE *TempCopy;
-    char *new_address;
+    char *new_address = malloc(sizeof(char) * MAX_ADD);
     char x;
     int row, column, current_row = 0, current_column = 0;
 
@@ -1062,6 +1120,7 @@ void pastestr()
 
     if(strcmp(command_extension, "--file") != 0) {
         printf("Invalid Command!\nTry pastestr --file!\n");
+        free(new_address);
         return;
     }
 
@@ -1083,6 +1142,7 @@ void pastestr()
 
     if(strcmp(command_extension, "--pos") != 0) {
         printf("Invalid Command!\nTry pastestr --file or --pos!\n");
+        free(new_address);
         return;
     }
 
@@ -1091,6 +1151,7 @@ void pastestr()
     filepointer = fopen(new_address, "r");
     if(filepointer == NULL) {
         printf("File Doesn't Exist!\n");
+        free(new_address);
         return;
     }
     temp = fopen("temp", "w");
@@ -1150,4 +1211,121 @@ void pastestr()
     if(!result) {
         printf("Text Pasted Successfully!\n");
     }
+    free(new_address);
+}
+void compare()
+{
+    FILE *fptr1, *fptr2;
+    char *address1 = malloc(sizeof(char) * MAX_ADD);
+    char *address2 = malloc(sizeof(char) * MAX_ADD); 
+    char *new_address1 = malloc(sizeof(char) * MAX_ADD); 
+    char *new_address2 = malloc(sizeof(char) * MAX_ADD);
+    char x;
+    int row = 1;
+    char str1[1000][1000];
+    char str2[1000][1000];
+
+
+    getchar();
+    scanf("%c", &x);
+    // printf("x : %c\n", x);
+    if(x == '/') {
+        scanf("%s", address1);
+        new_address1 = address1;
+        // x = '\0';
+    }else if(x == '"') {
+        scanf("%[^\"]s", address1);
+        new_address1 = address1 + 1;
+        // x = '\0';
+    }
+    // printf("new address : i%si\n", new_address1);
+    
+    getchar();
+    if(x == '"') {
+        getchar();
+    }
+
+    scanf("%c", &x);
+    // printf("x : %c\n", x);
+
+    if(x == '/') {
+        scanf("%s", address2);
+        new_address2 = address2;
+        x = '\0';
+    }else if(x == '"') {
+        scanf("%[^\"]s", address2);
+        new_address2 = address2 + 1;
+        x = '\0';
+    }
+    // printf("new address2 : i%si\n", new_address2);
+
+    fptr1 = fopen(new_address1, "r");
+    fptr2 = fopen(new_address2, "r");
+
+    int i = 0;
+
+    while(fgets(str1[i], MAX_CONTENT, fptr1))
+    {
+        i++;
+    }
+    for(int j = 0; j < i - 1; j++){
+        str1[j][strlen(str1[j]) - 1] = '\0';
+    }
+
+    int z = 0;
+
+    while(fgets(str2[z], MAX_CONTENT, fptr2))
+    {
+        z++;
+    }
+    for(int y = 0 ; y < z - 1; y++){
+        str2[y][strlen(str2[y]) - 1] = '\0';
+    }
+    
+    if(i > z) {
+        printf("\"Fisrt File > Second File\"\n");
+    }else if(i == z) {
+        printf("\"Fisrt File = Second File\"\n");
+    }else {
+        printf("\"First File < Second File\"\n");
+    }
+
+    int size1 = i;
+    int size2 = z;
+    i = 0;
+    z = 0;
+
+    while(i < size1 && z < size2)
+    {
+        if(strcmp(str1[i], str2[z])) {
+            printf("======== #%d ========\n", row);
+            printf("%s\n", str1[i]);
+            printf("%s\n", str2[z]);
+        }
+        i++;
+        z++;
+        row++;
+    }
+
+    if(size1 > size2) {
+        printf(">>>>>>>> #%d - #%d >>>>>>>>\n", i+1, size1);
+        while(i < size1) 
+        {
+            printf("%s\n", str1[i]);
+            i++;
+        }
+    }
+    else if(size2 > size1) {
+        printf(">>>>>>>> #%d - #%d >>>>>>>>\n", z+1, size2);
+        while(z < size2) 
+        {
+            printf("%s\n", str2[z]);
+            z++;
+        }
+    }
+    free(new_address1);
+    free(new_address2);
+    free(address1);
+    free(address2);
+
 }
