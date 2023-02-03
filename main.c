@@ -239,15 +239,15 @@ void insertstr()
     if(x == '/') {
         scanf("%s", address);
         new_address = address;
-        x = '\0';
     }else if(x == '"') {
         scanf("%[^\"]s", address);
         new_address = address + 1;
         // new_address[strlen(new_address) - 1] = '\0';
-        x = '\0';
     }
     // printf("address = i%si\n", new_address);
 
+    if(x == '"')
+        getchar();
     getchar();
     scanf(" %[^ ]s", command_extension);
     // printf("command ext = i%si\n", command_extension);
@@ -385,13 +385,13 @@ void removestr()
     if(x == '/') {
         scanf("%s", address);
         new_address = address;
-        x = '\0';
     }else if(x == '"') {
         scanf("%[^\"]s", address);
         new_address = address + 1;
-        x = '\0';
     }
-
+    
+    if(x == '"')
+        getchar();
     getchar();
     scanf("%[^ ]s", command_extension); 
 
@@ -629,14 +629,13 @@ void copystr()
     if(x == '/') {
         scanf("%s", address);
         new_address = address;
-        x = '\0';
     }else if(x == '"') {
         scanf("%[^\"]s", address);
         new_address = address + 1;
-        x = '\0';
     }
     // printf("new address : i%si\n", new_address);
-
+    if(x == '"')
+        getchar();
     getchar();
     scanf("%[^ ]s", command_extension); 
     // printf("comm ext : i%si\n", command_extension);
@@ -855,14 +854,13 @@ void cutstr()
     if(x == '/') {
         scanf("%s", address);
         new_address = address;
-        x = '\0';
     }else if(x == '"') {
         scanf("%[^\"]s", address);
         new_address = address + 1;
-        x = '\0';
     }
     // printf("new address : i%si\n", new_address);
-
+    if(x == '"')
+        getchar();
     getchar();
     scanf("%[^ ]s", command_extension); 
     // printf("comm ext : i%si\n", command_extension);
@@ -1135,13 +1133,12 @@ void pastestr()
     if(x == '/') {
         scanf("%s", address);
         new_address = address;
-        x = '\0';
     }else if(x == '"') {
         scanf("%[^\"]s", address);
         new_address = address + 1;
-        x = '\0';
     }
-
+    if(x == '"')
+        getchar();
     getchar();
     scanf("%[^ ]s", command_extension); 
 
@@ -1237,31 +1234,28 @@ void compare()
     if(x == '/') {
         scanf("%s", address1);
         new_address1 = address1;
-        // x = '\0';
     }else if(x == '"') {
         scanf("%[^\"]s", address1);
         new_address1 = address1 + 1;
-        // x = '\0';
     }
     // printf("new address : i%si\n", new_address1);
     
-    getchar();
-    if(x == '"') {
+    if(x == '"')
         getchar();
-    }
-
+    getchar();
     scanf("%c", &x);
     // printf("x : %c\n", x);
 
     if(x == '/') {
         scanf("%s", address2);
         new_address2 = address2;
-        x = '\0';
     }else if(x == '"') {
         scanf("%[^\"]s", address2);
         new_address2 = address2 + 1;
-        x = '\0';
     }
+
+    if(x == '"')
+        getchar();
     // printf("new address2 : i%si\n", new_address2);
 
     fptr1 = fopen(new_address1, "r");
@@ -1527,5 +1521,7 @@ void grep()
         }
     }
 
-
+    free(new_address);
+    free(new_str);
 }
+
