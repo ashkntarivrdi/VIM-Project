@@ -35,9 +35,15 @@ void pastestr();
 void compare();
 void grep();
 void get_tree();
-void tree(char *basepath, const int root, int depth, int counter);
+void undo();
 void FindCommand();
 
+
+void tree(char *basepath, const int root, int depth, int counter);
+void copyfile(char *filename1, char *filename2);
+void hidefile(char *filename);
+const char* namefile(const char *address);
+const char* fileaddress(char *address);
 
 
 int main()
@@ -99,6 +105,10 @@ void FindCommand()
         get_tree();
         return;
     }
+    else if(!strcmp(command, "undo")) {
+        undo();
+        return;
+    }
     else {
         char trash[MAX_CONTENT];
         scanf("%[^\n]s", trash);
@@ -106,6 +116,75 @@ void FindCommand()
         return;
     }
 
+}
+
+void copyfile(char *filename1, char *filename2)
+{
+    FILE *file1, *file2;
+    //file1-->destination
+    char x;
+    file1 = fopen(filename1, "w");
+    file2 = fopen(filename2, "r");
+
+    x = fgetc(file2);
+    while(x != EOF)
+    {
+        fputc(x, file1);
+        x = fgetc(file2);
+    }
+
+    fclose(file1);
+    fclose(file2);
+}
+
+void hidefile(char *filename)
+{
+    int attr = GetFileAttributes(filename);
+    if((attr & FILE_ATTRIBUTE_HIDDEN) == 0) {
+        SetFileAttributes(filename, attr | FILE_ATTRIBUTE_HIDDEN);
+    }
+}
+
+const char *fileaddress( char *address)
+{
+    char *new_address = malloc(sizeof(char) * MAX_CONTENT);
+    strcpy(new_address, address);
+    int i = strlen(new_address) - 1;
+    while(new_address[i] != '/')
+    {
+        new_address[i] = '\0';
+        i--;
+    }
+    new_address[i] = '\0';
+    return new_address;
+}
+
+const char *namefile(const char *new_address)
+{
+        char *filename = malloc(sizeof(char) * MAX_CONTENT);   
+        int count = 0;
+        int k = strlen(new_address) - 1;
+        while(new_address[k] != '/')
+        {
+            count++;
+            k--;
+        }
+
+        for(int s = 0; s < MAX_CONTENT; s++) {
+            filename[s] = '\0';
+        }
+
+        int l = count - 1;
+        k = strlen(new_address) - 1;
+        while(new_address[k] != '/')
+        {
+            filename[l] = new_address[k];
+            k--;
+            l--;
+        }
+        filename[strlen(filename)] = '1';
+        filename[strlen(filename) + 1] = '\0';
+    return filename;
 }
 
 void cat() 
@@ -296,6 +375,15 @@ void insertstr()
     }
 
     scanf("%d:%d", &row, &column);
+    
+    //undo
+    char new_path[MAX_CONTENT] = { 0 };
+    strcpy(new_path, fileaddress(new_address));
+    strcat(new_path, "/");
+    strcat(new_path, namefile(new_address));
+    // printf("new : i%si\n", new_path);
+    copyfile(new_path, new_address);
+    hidefile(new_path);
 
     filepointer = fopen(new_address, "r");
     if(filepointer == NULL) {
@@ -424,6 +512,15 @@ void removestr()
 
     getchar();
     scanf("%[^\n]s", command_extension);
+
+    //undo
+    char new_path[MAX_CONTENT] = { 0 };
+    strcpy(new_path, fileaddress(new_address));
+    strcat(new_path, "/");
+    strcat(new_path, namefile(new_address));
+    // printf("new : i%si\n", new_path);
+    copyfile(new_path, new_address);
+    hidefile(new_path);
     
     filepointer = fopen(new_address, "r");
     if(filepointer == NULL) {
@@ -898,6 +995,14 @@ void cutstr()
     scanf("%[^\n]s", command_extension);
     // printf("comm ext : i%si\n", command_extension);
 
+    //undo
+    char new_path[MAX_CONTENT] = { 0 };
+    strcpy(new_path, fileaddress(new_address));
+    strcat(new_path, "/");
+    strcat(new_path, namefile(new_address));
+    // printf("new : i%si\n", new_path);
+    copyfile(new_path, new_address);
+    hidefile(new_path);
     
     filepointer = fopen(new_address, "r");
     if(filepointer == NULL) {
@@ -1157,6 +1262,15 @@ void pastestr()
     }
 
     scanf("%d:%d", &row, &column);
+
+    //undo
+    char new_path[MAX_CONTENT] = { 0 };
+    strcpy(new_path, fileaddress(new_address));
+    strcat(new_path, "/");
+    strcat(new_path, namefile(new_address));
+    // printf("new : i%si\n", new_path);
+    copyfile(new_path, new_address);
+    hidefile(new_path);
     
     filepointer = fopen(new_address, "r");
     if(filepointer == NULL) {
@@ -1590,4 +1704,55 @@ void tree(char *basepath, const int root, int depth, int counter)
     }
 
     closedir(directory);
+}
+
+void undo()
+{
+    FILE *undo;
+    char x;
+    char *new_address = malloc(sizeof(char) * MAX_ADD);
+    char new_path[MAX_CONTENT] = { 0 };
+
+    scanf(" %[^ ]s", command_extension);
+    // printf("cmd ext i%si\n", command_extension);
+
+    if(strcmp(command_extension, "--file") != 0) {
+        // printf("Invalid Command!\nTry cat --file!\n");
+        free(new_address);
+        return;
+    }
+
+    getchar();
+    scanf("%c", &x);
+    scanf(" %[^\n]s", address);
+
+    if(x == '/') {
+        new_address = address;
+    }else if(x == '"') {
+        new_address = address + 1;
+        new_address[strlen(new_address) - 1] = '\0';
+    }    
+
+    // printf("addres i%si\n", new_address);
+
+    strcpy(new_path, fileaddress(new_address));
+    strcat(new_path, "/");
+    strcat(new_path, namefile(new_address));    
+
+    filepointer = fopen(new_address, "w");
+    undo = fopen(new_path, "r");
+
+    x = fgetc(undo);
+    while(x != EOF)
+    {
+        fputc(x, filepointer);
+        x = fgetc(undo);
+    }
+
+    fclose(undo);
+    fclose(filepointer);
+    int result = remove(namefile(new_address));
+    if(!result) {
+        printf("Previous File Is Visible Now!\n");
+    }
 }
