@@ -34,6 +34,8 @@ void cutstr();
 void pastestr();
 void compare();
 void grep();
+void get_tree();
+void tree(char *basepath, const int root, int depth, int counter);
 void FindCommand();
 
 
@@ -93,7 +95,13 @@ void FindCommand()
         grep();
         return;
     }
+    else if(!strcmp(command, "tree")) {
+        get_tree();
+        return;
+    }
     else {
+        char trash[MAX_CONTENT];
+        scanf("%[^\n]s", trash);
         printf("Invalid Command!\nSimply type <--help> for more information.\n");
         return;
     }
@@ -1525,3 +1533,61 @@ void grep()
     free(new_str);
 }
 
+void get_tree()
+{
+    int depth;
+    scanf("%d", &depth);
+    if(depth < -1) {
+        printf("Depth Must Be Greater Than -1!\n");
+        return;
+    }
+    if(depth == 0) {
+        printf("root\n");
+        return;
+    }
+
+    depth++;
+    int counter = depth;
+    tree("root", 0, depth, counter);
+}
+
+void tree(char *basepath, const int root, int depth, int counter)
+{
+    int i;
+    char path[1000];
+    struct dirent *entity;
+    DIR *directory = opendir(basepath);
+
+    counter--;
+    if(counter == 0) {
+        return;
+    }
+
+    if (directory == NULL) {
+        return;
+    }
+
+    while ((entity = readdir(directory)) != NULL)
+    {
+        if (strcmp(entity->d_name, ".") != 0 && strcmp(entity->d_name, "..") != 0)
+        {
+            for (i=0; i<root; i++) 
+            {
+                if (i%2 == 0 || i == 0)
+                    printf("%c", 179);
+                else
+                    printf(" ");
+
+            }
+
+            printf("%c%c%s\n", 195, 196, entity->d_name);
+
+            strcpy(path, basepath);
+            strcat(path, "/");
+            strcat(path, entity->d_name);
+            tree(path, root + 2, depth, counter);
+        }
+    }
+
+    closedir(directory);
+}
