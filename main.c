@@ -37,6 +37,7 @@ void grep();
 void get_tree();
 void undo();
 void closingpair();
+void find();
 void FindCommand();
 
 
@@ -114,6 +115,10 @@ void FindCommand()
     }
     else if(!strcmp(command, "auto-indent")) {
         closingpair();
+        return;
+    }
+    else if(!strcmp(command, "find")) {
+        find();
         return;
     }
     else {
@@ -1939,4 +1944,113 @@ void closingpair()
     if(!result) {
         printf("Text Auto Indented Successfully!\n");
     }
+}
+
+void find()
+{
+    char *new_address = malloc(sizeof(char) * MAX_ADD);
+    char str[MAX_CONTENT];
+    char *new_str = malloc(sizeof(char) * MAX_CONTENT);
+    char *existing_str = malloc(sizeof(char) * MAX_CONTENT);
+    char x;
+
+    getchar();
+    scanf("%[^ ]s", command_extension);
+    // printf("cmd ext : i%si\n", command_extension);
+    
+    if(strcmp(command_extension, "--str") != 0) {
+        printf("Invalid Command!\nTry find --str!\n");
+        free(new_address);
+        free(new_str);
+        // free(file_address);
+        return;
+    }
+
+    getchar();
+    scanf("%c", &x);
+    // printf("c = %c\n", x);
+    if(x == '"') {
+        scanf("%[^-]s", str);
+        new_str = str;
+        new_str[strlen(new_str) - 2] = '\0';
+    }else {
+        scanf("%s", str);
+        new_str = str;
+        for(int i = sizeof(str) - 2; i >=0; i--) {
+            new_str[i + 1] = new_str[i];
+        }
+        new_str[0] = x;
+    }
+    // printf("new str : i%si\n", new_str);
+    
+    if(x == '/')
+        getchar();
+    scanf("%[^ ]s", command_extension);
+    // printf("command ext = i%si\n", command_extension);
+
+    if(strcmp(command_extension, "--file") != 0) {
+        printf("Invalid Command!\nTry file --str or --file!\n");
+        free(new_address);
+        free(new_str);
+        // free(file_address);
+        return;
+    }
+
+    getchar();
+    scanf("%c", &x);
+    // printf("x : i%ci\n", x);
+    scanf(" %[^\n]s", address);
+
+    if(x == '/') {
+        new_address = address;
+    }else if(x == '"') {
+        new_address = address + 1;
+        new_address[strlen(new_address) - 1] = '\0';
+    }
+    // printf("new addres : i%si\n", new_address);
+
+    //turn into string
+    filepointer = fopen(new_address, "r");
+    existing_str = turn_into_string(new_address);
+
+    // printf("exist : i%si\n", existing_str);
+    fclose(filepointer);
+
+    filepointer = fopen(new_address, "r");
+    if(filepointer == NULL) {
+        printf("File Doesn't Exist!\n");
+        free(new_address);
+        free(existing_str);
+        free(new_str);
+        return;
+    }    
+
+    int length = strlen(new_str);
+    int i = 0, target_index = 0, current_index = 0;
+
+    x = fgetc(filepointer);
+    while(x != EOF)
+    {
+        if(target_index == length) {
+            printf("%d\n", current_index - length);
+            // printf("curr : %c\n", existing_str[current_index - length]);
+            break;
+        }
+
+        if(existing_str[current_index] == new_str[target_index]) {
+            current_index++;
+            target_index++;
+        } else {
+            if(existing_str[current_index] == new_str[target_index - 1]) {
+                target_index = 0;
+            } else {
+                current_index++;
+                target_index = 0;
+            }
+        }
+
+        x = fgetc(filepointer);
+    }
+
+
 }
