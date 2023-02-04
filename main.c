@@ -46,6 +46,7 @@ void hidefile(char *filename);
 void showfile(char *filename);
 char* namefile(const char *address);
 const char* fileaddress(char *address);
+char* turn_into_string(char *filename);
 
 
 int main()
@@ -199,6 +200,37 @@ char *namefile(const char *new_address)
         filename[strlen(filename)] = '1';
         filename[strlen(filename) + 1] = '\0';
     return filename;
+}
+
+char *turn_into_string(char *filename)
+{
+    FILE *file;
+
+    file = fopen(filename, "r");
+
+    if(file == NULL) {
+        return NULL;
+    }
+
+    fseek(file, 0, SEEK_END);
+    int length = ftell(file);
+    fseek(file, 0, SEEK_SET);
+
+    char *string = malloc(sizeof(char) * (length + 1));
+
+    char x;
+    int i = 0;
+
+    while((x = fgetc(file)) != EOF)
+    {
+        string[i] = x;
+        i++;
+    }
+    string[i] = '\0';
+
+    fclose(file);
+
+    return string;
 }
 
 void cat() 
@@ -1804,13 +1836,13 @@ void undo()
 void closingpair()
 {
     FILE *temp;
-    char existing_str[1000][1000];
+    char *existing_str;
     char *new_address = malloc(sizeof(char) * MAX_ADD);
     char x;
 
     getchar();
     scanf("%c", &x);
-    printf("x : i%ci\n", x);
+    // printf("x : i%ci\n", x);
     scanf(" %[^\n]s", address);
 
     if(x == '/') {
@@ -1820,10 +1852,33 @@ void closingpair()
         new_address[strlen(new_address) - 1] = '\0';
     }     
 
-    printf("new add : i%si\n", new_address);
-    char buff[FILENAME_MAX];
-    GetCurrentDir( buff, FILENAME_MAX);
-    printf("%s\n", buff);
+    // printf("new add : i%si\n", new_address);
+
+    existing_str = turn_into_string(new_address);
+    if(existing_str == NULL) {
+        printf("File Doesn't Exist!\n");
+        free(new_address);
+        return;
+    }
+
+    int RightBrace = 0;
+    int LeftBrace = 0;
+    for(int y = 0; y < strlen(existing_str); y++)
+    {
+        if(existing_str[y] == '{') {
+            LeftBrace++;
+        }
+        else if(existing_str[y] == '}') {
+            RightBrace++;
+        }
+    }
+
+    if(RightBrace != LeftBrace) {
+        printf("Can't Do It! Check The Number Of Braces!\n");
+        free(new_address);
+        return;
+    }
+    
 
     filepointer = fopen(new_address, "r");
     if(filepointer == NULL) {
@@ -1833,33 +1888,55 @@ void closingpair()
     }
     temp = fopen("temp", "w");
 
-    //turn text into two dimensional array
-    int i = 0;
-    while(fgets(existing_str[i], MAX_CONTENT, filepointer))
-    {
-        i++;
-    }
-    for(int j = 0; j < i - 1; j++){
-        existing_str[j][strlen(existing_str[j]) - 1] = '\0';
-    }
-    // printf("i%si\n", existing_str[0]);
-    
+
+    // int i = 0;
     // int j = 0;
-    // i = 0;
-    // x = fgetc(filepointer);
-    // while(x != EOF)
-    // {
-    //     if(x == '{') {
-    //         if(i == 0) {
-    //             fputc(x, temp);
-    //             fputc('\n', temp);
-    //         } else {
-    //             while()
-    //         }
+    int counter = 0;
 
-    //     }
-    //     i++;
+    x = fgetc(filepointer);
+    while(x != EOF)
+    {
+        if(x == '{') {
+            fputc('\n', temp);
+            for(int z = 0; z < counter; z++)
+            {
+                fputc('\t', temp);
+            }
+            fputc(x, temp);
+            counter++;
+            fputc('\n', temp);
+            for(int z = 0; z < counter; z++)
+            {
+                fputc('\t', temp);
+            }
+        }
+        else if(x == '}') {
+            fputc('\n', temp);
+            for(int z = counter; z > 1; z--)
+            {
+                fputc('\t', temp);
+            }
+            fputc(x, temp);
+            fputc('\n', temp);
+            for(int z = counter; z > 1; z--)
+            {
+                fputc('\t', temp);
+            }
+            // RightBrace--;
+            counter--;
+        }
+        else {
+            fputc(x, temp);
+        }
+        x = fgetc(filepointer);
+    }
 
-    // }
+    fclose(filepointer);
+    fclose(temp);
 
+    copyfile(new_address, "temp");
+    int result = remove("temp");
+    if(!result) {
+        printf("Text Auto Indented Successfully!\n");
+    }
 }
