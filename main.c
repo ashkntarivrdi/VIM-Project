@@ -38,6 +38,7 @@ void get_tree();
 void undo();
 void closingpair();
 void find();
+void replace();
 void FindCommand();
 
 
@@ -119,6 +120,10 @@ void FindCommand()
     }
     else if(!strcmp(command, "find")) {
         find();
+        return;
+    }
+    else if(!strcmp(command, "replace")) {
+        replace();
         return;
     }
     else {
@@ -1654,13 +1659,6 @@ void grep()
         while(x != EOF)
         {
             // printf("fuck\n");
-            if(target_char == length) {
-                strcpy(found_str[i], existing_str[current_line]); 
-                i++;
-                current_line++;
-                target_char = 0;
-                current_char = 0;
-            }
 
             if(existing_str[current_line][current_char] == '\0') {
                 current_line++;
@@ -1678,6 +1676,13 @@ void grep()
                     current_char++;
                     target_char = 0;
                 }
+            }
+            if(target_char == length) {
+                strcpy(found_str[i], existing_str[current_line]); 
+                i++;
+                current_line++;
+                target_char = 0;
+                current_char = 0;
             }
             
             x = fgetc(filepointer);
@@ -2031,11 +2036,6 @@ void find()
     x = fgetc(filepointer);
     while(x != EOF)
     {
-        if(target_index == length) {
-            printf("%d\n", current_index - length);
-            // printf("curr : %c\n", existing_str[current_index - length]);
-            break;
-        }
 
         if(existing_str[current_index] == new_str[target_index]) {
             current_index++;
@@ -2048,9 +2048,192 @@ void find()
                 target_index = 0;
             }
         }
+        if(target_index == length) {
+            printf("%d\n", current_index - length);
+            // printf("curr : %c\n", existing_str[current_index - length]);
+            return;
+        }
 
         x = fgetc(filepointer);
     }
+    printf("No Such String Found!\n");
+}
 
+void replace()
+{
+    FILE *temp;
+    char *new_address = malloc(sizeof(char) * MAX_ADD);
+    char str1[MAX_CONTENT];
+    char str2[MAX_CONTENT];
+    char *new_str1 = malloc(sizeof(char) * MAX_CONTENT);
+    char *new_str2 = malloc(sizeof(char) * MAX_CONTENT);
+    char *existing_str = malloc(sizeof(char) * MAX_CONTENT);
+    char x;
+    int IsFirtTime = 0;
+
+    getchar();
+    scanf("%[^ ]s", command_extension);
+    // printf("cmd ext : i%si\n", command_extension);
+    
+    if(strcmp(command_extension, "--str1") != 0) {
+        printf("Invalid Command!\nTry replace --str1!\n");
+        free(new_address);
+        free(new_str1);
+        free(new_str2);
+        // free(file_address);
+        return;
+    }
+    printf("cmd ext : i%si\n", command_extension);
+
+    getchar();
+    scanf("%c", &x);
+    // printf("c = %c\n", x);
+    if(x == '"') {
+        scanf("%[^-]s", str1);
+        new_str1 = str1;
+        new_str1[strlen(new_str1) - 2] = '\0';
+    }else {
+        scanf("%s", str1);
+        new_str1 = str1;
+        for(int i = sizeof(str1) - 2; i >=0; i--) {
+            new_str1[i + 1] = new_str1[i];
+        }
+        new_str1[0] = x;
+    }
+    printf("str1 : i%si\n", new_str1);
+    // const char* new_str11 = malloc(sizeof(char) * MAX_CONTENT);
+    // new_str11 = new_str1;
+
+    // if(x == '"')
+    //     getchar();
+    // getchar();
+    scanf("%[^ ]s", command_extension);
+    // printf("cmd ext : i%si\n", command_extension);
+    
+    if(strcmp(command_extension, "--str2") != 0) {
+        printf("Invalid Command!\nTry replace --str1 or --str2!\n");
+        free(new_address);
+        free(new_str1);
+        free(new_str2);
+        // free(file_address);
+        return;
+    }       
+    printf("cmd ext : i%si\n", command_extension);
+
+    getchar();
+    scanf("%c", &x);
+    // printf("c = %c\n", x);
+    if(x == '"') {
+        scanf("%[^-]s", str2);
+        new_str2 = str2;
+        new_str2[strlen(new_str2) - 2] = '\0';
+    }else {
+        scanf("%s", str2);
+        new_str2 = str2;
+        for(int i = sizeof(str2) - 2; i >=0; i--) {
+            new_str2[i + 1] = new_str2[i];
+        }
+        new_str2[0] = x;
+    }
+    printf("str2 : i%si\n", new_str2);
+
+    if(x == '/')
+        getchar();
+    scanf("%[^ ]s", command_extension);
+    printf("command ext = i%si\n", command_extension);
+
+    if(strcmp(command_extension, "--file") != 0) {
+        printf("Invalid Command!\nTry file --str or --file!\n");
+        free(new_address);
+        free(new_str1);
+        free(new_str2);
+        // free(file_address);
+        return;
+    }
+
+
+    getchar();
+    scanf("%c", &x);
+    printf("x : i%ci\n", x);
+    scanf(" %[^\n]s", address);
+
+    if(x == '/') {
+        new_address = address;
+    }else if(x == '"') {
+        new_address = address + 1;
+        new_address[strlen(new_address) - 1] = '\0';
+    }
+    printf("new addres : i%si\n", new_address);
+
+    //turn into string
+    filepointer = fopen(new_address, "r");
+    existing_str = turn_into_string(new_address);
+
+    // printf("exist : i%si\n", existing_str);
+    fclose(filepointer);
+
+    filepointer = fopen(new_address, "r");
+    if(filepointer == NULL) {
+        printf("File Doesn't Exist!\n");
+        free(new_address);
+        free(existing_str);
+        free(new_str1);
+        free(new_str2);
+        return;
+    }    
+    temp = fopen("temp", "w");
+
+    int length = strlen(new_str1);
+    int i = 0, target_index = 0, current_index = 0;
+
+    printf("str1 : i%si\n", new_str1);
+    printf("str2 : i%si\n", new_str2);
+
+    x = fgetc(filepointer);
+    while(x != EOF)
+    {
+
+        if(existing_str[current_index] == new_str1[target_index]) {
+            current_index++;
+            target_index++;
+        } else {
+            if(existing_str[current_index] == new_str1[target_index - 1]) {
+                target_index = 0;
+            } else {
+                current_index++;
+                target_index = 0;
+            }
+        }
+        if(target_index == length) {
+            for(int z = 0; z < current_index - length; z++) 
+            {
+                fputc(existing_str[z], temp);
+            }
+            for(int z = 0; z < strlen(new_str2); z++)
+            {
+                fputc(new_str2[z], temp);
+            }
+            for(int z = current_index; existing_str[z] != NULL; z++)
+            {
+                fputc(existing_str[z], temp);
+            }
+            // printf("%d\n", current_index - length);
+            // printf("fuck");
+            // printf("curr : %c\n", existing_str[current_index - length]);
+            IsFirtTime = 1;
+            break;
+        }
+
+        x = fgetc(filepointer);
+    }
+    fclose(temp);
+    fclose(filepointer);
+    if(IsFirtTime){
+        copyfile(new_address, "temp");
+        printf("Text Replaced Successfully!\n");
+    } else {
+        printf("No Match Found To Replace!\n");
+    }
+    remove("temp");
 
 }
