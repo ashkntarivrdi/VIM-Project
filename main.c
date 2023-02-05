@@ -129,7 +129,7 @@ void FindCommand()
     else {
         char trash[MAX_CONTENT];
         scanf("%[^\n]s", trash);
-        printf("Invalid Command!\nSimply type <--help> for more information.\n");
+        printf("Invalid Command!\n");
         return;
     }
 
@@ -251,6 +251,8 @@ void cat()
     scanf(" %[^ ]s", command_extension);
 
     if(strcmp(command_extension, "--file") != 0) {
+        char trash[MAX_CONTENT];
+        scanf("%[^\n]s", trash);
         printf("Invalid Command!\nTry cat --file!\n");
         free(new_address);
         return;
@@ -299,10 +301,12 @@ void createfile()
     scanf(" %[^ ]s", command_extension);
 
     if(strcmp(command_extension, "--file") != 0) {
+        char trash[MAX_CONTENT];
+        scanf("%[^\n]s", trash);
         printf("Invalid Command!\nTry createfile --file!\n");
-        free(directory);
-        free(next_directory);
-        free(new_address);
+        // free(directory);
+        // free(next_directory);
+        // free(new_address);
         return;
     }
 
@@ -369,9 +373,11 @@ void insertstr()
     // printf("command ext = i%si\n", command_extension);
 
     if(strcmp(command_extension, "--file") != 0) {
+        char trash[MAX_CONTENT];
+        scanf("%[^\n]s", trash);
         printf("Invalid Command!\nTry insertstr --file or --str or --pos!\n");
-        free(new_address);
-        free(new_str);
+        // free(new_address);
+        // free(new_str);
         return;
     }
 
@@ -396,9 +402,11 @@ void insertstr()
     // printf("command ext = i%si\n", command_extension);
 
     if(strcmp(command_extension, "--str") != 0) {
+        char trash[MAX_CONTENT];
+        scanf("%[^\n]s", trash);
         printf("Invalid Command!\nTry insertstr --file or --str or --pos!\n");
-        free(new_address);
-        free(new_str);
+        // free(new_address);
+        // free(new_str);
         return;
     }
 
@@ -424,9 +432,11 @@ void insertstr()
     // printf("command ext = i%si\n", command_extension);
 
     if(strcmp(command_extension, "--pos") != 0) {
+        char trash[MAX_CONTENT];
+        scanf("%[^\n]s", trash);
         printf("Invalid Command!\nTry insertstr --file or --str or --pos!\n");
-        free(new_address);
-        free(new_str);
+        // free(new_address);
+        // free(new_str);
         return;
     }
 
@@ -527,8 +537,10 @@ void removestr()
     scanf(" %[^ ]s", command_extension);
 
     if(strcmp(command_extension, "--file") != 0) {
+        char trash[MAX_CONTENT];
+        scanf("%[^\n]s", trash);
         printf("Invalid Command!\nTry removestr --file!\n");
-        free(new_address);
+        // free(new_address);
         return;
     }
 
@@ -549,8 +561,10 @@ void removestr()
     scanf("%[^ ]s", command_extension); 
 
     if(strcmp(command_extension, "--pos") != 0) {
+        char trash[MAX_CONTENT];
+        scanf("%[^\n]s", trash);
         printf("Invalid Command!\nTry removestr --file or --pos!\n");
-        free(new_address);    
+        // free(new_address);    
         return;
     }
 
@@ -560,8 +574,10 @@ void removestr()
     scanf("%[^ ]s", command_extension);   
 
     if(strcmp(command_extension, "-size") != 0) {
+        char trash[MAX_CONTENT];
+        scanf("%[^\n]s", trash);
         printf("Invalid Command!\nTry removestr --file or --pos or -size!\n");
-        free(new_address);
+        // free(new_address);
         return;
     } 
 
@@ -739,6 +755,8 @@ void removestr()
         fclose(temp);
 
     }else {
+        char trash[MAX_CONTENT];
+        scanf("%[^\n]s", trash);
         printf("Invalid Command!\nTry insertstr --file or --pos or -size or -b/-f\n");
         fclose(filepointer);
         fclose(temp);
@@ -779,8 +797,10 @@ void copystr()
     scanf(" %[^ ]s", command_extension);
 
     if(strcmp(command_extension, "--file") != 0) {
+        char trash[MAX_CONTENT];
+        scanf("%[^\n]s", trash);
         printf("Invalid Command!\nTry copystr --file!\n");
-        free(new_address);
+        // free(new_address);
         return;
     }
     // printf("comm ext : i%si\n", command_extension);
@@ -804,8 +824,10 @@ void copystr()
     // printf("comm ext : i%si\n", command_extension);
 
     if(strcmp(command_extension, "--pos") != 0) {
+        char trash[MAX_CONTENT];
+        scanf("%[^\n]s", trash);
         printf("Invalid Command!\nTry copystr --file or --pos!\n");
-        free(new_address);
+        // free(new_address);
         return;
     }
 
@@ -816,8 +838,10 @@ void copystr()
     // printf("comm ext : i%si\n", command_extension);
 
     if(strcmp(command_extension, "-size") != 0) {
+        char trash[MAX_CONTENT];
+        scanf("%[^\n]s", trash);
         printf("Invalid Command!\nTry copystr --file or --pos or -size!\n");
-        free(new_address);
+        // free(new_address);
         return;
     } 
 
@@ -983,6 +1007,8 @@ void copystr()
     printf("Text Copied Successfully!\n");
 
     } else {
+        char trash[MAX_CONTENT];
+        scanf("%[^\n]s", trash);
         printf("Invalid Command!\nTry insertstr --file or --pos or -size or -b/-f\n");
         fclose(filepointer);
         fclose(temp);
@@ -1004,8 +1030,10 @@ void cutstr()
     scanf(" %[^ ]s", command_extension);
 
     if(strcmp(command_extension, "--file") != 0) {
+        char trash[MAX_CONTENT];
+        scanf("%[^\n]s", trash);
         printf("Invalid Command!\nTry cutstr --file!\n");
-        free(new_address);
+        // free(new_address);
         return;
     }
     // printf("comm ext : i%si\n", command_extension);
@@ -1029,8 +1057,10 @@ void cutstr()
     // printf("comm ext : i%si\n", command_extension);
 
     if(strcmp(command_extension, "--pos") != 0) {
+        char trash[MAX_CONTENT];
+        scanf("%[^\n]s", trash);
         printf("Invalid Command!\nTry cutstr --file or --pos!\n");
-        free(new_address);
+        // free(new_address);
         return;
     }
 
@@ -1041,8 +1071,10 @@ void cutstr()
     // printf("comm ext : i%si\n", command_extension);
 
     if(strcmp(command_extension, "-size") != 0) {
+        char trash[MAX_CONTENT];
+        scanf("%[^\n]s", trash);
         printf("Invalid Command!\nTry cutstr --file or --pos or -size!\n");
-        free(new_address);
+        // free(new_address);
         return;
     } 
 
@@ -1271,6 +1303,8 @@ void cutstr()
     }
 
     } else {
+        char trash[MAX_CONTENT];
+        scanf("%[^\n]s", trash);
         printf("Invalid Command!\nTry cutstr --file or --pos or -size or -b/-f\n");
         fclose(filepointer);
         fclose(TempCopy);
@@ -1294,8 +1328,10 @@ void pastestr()
     scanf(" %[^ ]s", command_extension);
 
     if(strcmp(command_extension, "--file") != 0) {
+        char trash[MAX_CONTENT];
+        scanf("%[^\n]s", trash);
         printf("Invalid Command!\nTry pastestr --file!\n");
-        free(new_address);
+        // free(new_address);
         return;
     }
 
@@ -1315,8 +1351,10 @@ void pastestr()
     scanf("%[^ ]s", command_extension); 
 
     if(strcmp(command_extension, "--pos") != 0) {
+        char trash[MAX_CONTENT];
+        scanf("%[^\n]s", trash);
         printf("Invalid Command!\nTry pastestr --file or --pos!\n");
-        free(new_address);
+        // free(new_address);
         return;
     }
 
@@ -1479,7 +1517,7 @@ void compare()
     while(i < size1 && z < size2)
     {
         if(strcmp(str1[i], str2[z])) {
-            printf("======== #%d ========\n", row);
+            printf("========= #%d ==+======\n", row);
             printf("%s\n", str1[i]);
             printf("%s\n", str2[z]);
         }
@@ -1489,7 +1527,7 @@ void compare()
     }
 
     if(size1 > size2) {
-        printf(">>>>>>>> #%d - #%d >>>>>>>>\n", i+1, size1);
+        printf(">>>>>>>>> #%d - #%d >>>>>>>>>\n", i+1, size1);
         while(i < size1) 
         {
             printf("%s\n", str1[i]);
@@ -1497,7 +1535,7 @@ void compare()
         }
     }
     else if(size2 > size1) {
-        printf(">>>>>>>> #%d - #%d >>>>>>>>\n", z+1, size2);
+        printf(">>>>>>>>> #%d - #%d >>>>>>>>>\n", z+1, size2);
         while(z < size2) 
         {
             printf("%s\n", str2[z]);
@@ -1541,9 +1579,11 @@ void grep()
     }
 
     if(strcmp(command_extension, "--str") != 0) {
+        char trash[MAX_CONTENT];
+        scanf("%[^\n]s", trash);
         printf("Invalid Command!\nTry grep --str!\n");
-        free(new_address);
-        free(new_str);
+        // free(new_address);
+        // free(new_str);
         // free(file_address);
         return;
     }
@@ -1571,9 +1611,11 @@ void grep()
     // printf("command ext = i%si\n", command_extension);
 
     if(strcmp(command_extension, "--file") != 0) {
+        char trash[MAX_CONTENT];
+        scanf("%[^\n]s", trash);
         printf("Invalid Command!\nTry grep --str or --file!\n");
-        free(new_address);
-        free(new_str);
+        // free(new_address);
+        // free(new_str);
         // free(file_address);
         return;
     }
@@ -1778,8 +1820,10 @@ void undo()
     // printf("cmd ext i%si\n", command_extension);
 
     if(strcmp(command_extension, "--file") != 0) {
-        // printf("Invalid Command!\nTry cat --file!\n");
-        free(new_address);
+        char trash[MAX_CONTENT];
+        scanf("%[^\n]s", trash);
+        printf("Invalid Command!\nTry undo --file!\n");
+        // free(new_address);
         return;
     }
 
@@ -1958,12 +2002,29 @@ void find()
     char *new_str = malloc(sizeof(char) * MAX_CONTENT);
     char *existing_str = malloc(sizeof(char) * MAX_CONTENT);
     char x;
+    int IsFirtTime = 0;
+    int location;
 
     getchar();
     scanf("%[^ ]s", command_extension);
+
+    if(!strcmp(command_extension, "--str")) {
+        IsFirtTime = 0;
+    }else if(!strcmp(command_extension, "-count")) {
+        getchar();
+        scanf("%[^ ]s", command_extension);
+        IsFirtTime = 1;
+    }else if(!strcmp(command_extension, "-at")) {
+        scanf("%d", &location);
+        getchar();
+        scanf("%[^ ]s", command_extension);
+        IsFirtTime = 2;
+    }
     // printf("cmd ext : i%si\n", command_extension);
     
     if(strcmp(command_extension, "--str") != 0) {
+        char trash[MAX_CONTENT];
+        scanf("%[^\n]s", trash);
         printf("Invalid Command!\nTry find --str!\n");
         free(new_address);
         free(new_str);
@@ -1994,9 +2055,11 @@ void find()
     // printf("command ext = i%si\n", command_extension);
 
     if(strcmp(command_extension, "--file") != 0) {
+        char trash[MAX_CONTENT];
+        scanf("%[^\n]s", trash);
         printf("Invalid Command!\nTry file --str or --file!\n");
-        free(new_address);
-        free(new_str);
+        // free(new_address);
+        // free(new_str);
         // free(file_address);
         return;
     }
@@ -2024,14 +2087,14 @@ void find()
     filepointer = fopen(new_address, "r");
     if(filepointer == NULL) {
         printf("File Doesn't Exist!\n");
-        free(new_address);
-        free(existing_str);
-        free(new_str);
+        // free(new_address);
+        // free(existing_str);
+        // free(new_str);
         return;
     }    
 
     int length = strlen(new_str);
-    int i = 0, target_index = 0, current_index = 0;
+    int i = 0, target_index = 0, current_index = 0, counter = 0;
 
     x = fgetc(filepointer);
     while(x != EOF)
@@ -2048,13 +2111,32 @@ void find()
                 target_index = 0;
             }
         }
+        // printf("target : %d\n", target_index);
         if(target_index == length) {
-            printf("%d\n", current_index - length);
+            counter++;
+            if(IsFirtTime == 0) {
+                printf("%d\n", current_index - length);
+                return;
+            } else if(IsFirtTime == 2) {
+                if(counter == location) {
+                    printf("%d\n", current_index - length);
+                    return;
+                }
+            }
             // printf("curr : %c\n", existing_str[current_index - length]);
-            return;
         }
 
         x = fgetc(filepointer);
+        // printf("x : %c\n", x);
+    }
+    if(IsFirtTime == 1) {
+        printf("%d\n", counter);
+        return;
+    }else if(IsFirtTime == 2) {
+        if(location > counter) {
+            printf("%d\n", -1);
+            return;
+        }
     }
     printf("No Such String Found!\n");
 }
@@ -2076,14 +2158,16 @@ void replace()
     // printf("cmd ext : i%si\n", command_extension);
     
     if(strcmp(command_extension, "--str1") != 0) {
+        char trash[MAX_CONTENT];
+        scanf("%[^\n]s", trash);
         printf("Invalid Command!\nTry replace --str1!\n");
-        free(new_address);
-        free(new_str1);
-        free(new_str2);
+        // free(new_address);
+        // free(new_str1);
+        // free(new_str2);
         // free(file_address);
         return;
     }
-    printf("cmd ext : i%si\n", command_extension);
+    // printf("cmd ext : i%si\n", command_extension);
 
     getchar();
     scanf("%c", &x);
@@ -2100,25 +2184,22 @@ void replace()
         }
         new_str1[0] = x;
     }
-    printf("str1 : i%si\n", new_str1);
-    // const char* new_str11 = malloc(sizeof(char) * MAX_CONTENT);
-    // new_str11 = new_str1;
+    // printf("str1 : i%si\n", new_str1);
 
-    // if(x == '"')
-    //     getchar();
-    // getchar();
     scanf("%[^ ]s", command_extension);
     // printf("cmd ext : i%si\n", command_extension);
     
     if(strcmp(command_extension, "--str2") != 0) {
+        char trash[MAX_CONTENT];
+        scanf("%[^\n]s", trash);
         printf("Invalid Command!\nTry replace --str1 or --str2!\n");
-        free(new_address);
-        free(new_str1);
-        free(new_str2);
+        // free(new_address);
+        // free(new_str1);
+        // free(new_str2);
         // free(file_address);
         return;
     }       
-    printf("cmd ext : i%si\n", command_extension);
+    // printf("cmd ext : i%si\n", command_extension);
 
     getchar();
     scanf("%c", &x);
@@ -2135,18 +2216,20 @@ void replace()
         }
         new_str2[0] = x;
     }
-    printf("str2 : i%si\n", new_str2);
+    // printf("str2 : i%si\n", new_str2);
 
     if(x == '/')
         getchar();
     scanf("%[^ ]s", command_extension);
-    printf("command ext = i%si\n", command_extension);
+    // printf("command ext = i%si\n", command_extension);
 
     if(strcmp(command_extension, "--file") != 0) {
+        char trash[MAX_CONTENT];
+        scanf("%[^\n]s", trash);
         printf("Invalid Command!\nTry file --str or --file!\n");
-        free(new_address);
-        free(new_str1);
-        free(new_str2);
+        // free(new_address);
+        // free(new_str1);
+        // free(new_str2);
         // free(file_address);
         return;
     }
@@ -2154,7 +2237,7 @@ void replace()
 
     getchar();
     scanf("%c", &x);
-    printf("x : i%ci\n", x);
+    // printf("x : i%ci\n", x);
     scanf(" %[^\n]s", address);
 
     if(x == '/') {
@@ -2163,7 +2246,7 @@ void replace()
         new_address = address + 1;
         new_address[strlen(new_address) - 1] = '\0';
     }
-    printf("new addres : i%si\n", new_address);
+    // printf("new addres : i%si\n", new_address);
 
     //turn into string
     filepointer = fopen(new_address, "r");
@@ -2186,8 +2269,8 @@ void replace()
     int length = strlen(new_str1);
     int i = 0, target_index = 0, current_index = 0;
 
-    printf("str1 : i%si\n", new_str1);
-    printf("str2 : i%si\n", new_str2);
+    // printf("str1 : i%si\n", new_str1);
+    // printf("str2 : i%si\n", new_str2);
 
     x = fgetc(filepointer);
     while(x != EOF)
@@ -2217,9 +2300,6 @@ void replace()
             {
                 fputc(existing_str[z], temp);
             }
-            // printf("%d\n", current_index - length);
-            // printf("fuck");
-            // printf("curr : %c\n", existing_str[current_index - length]);
             IsFirtTime = 1;
             break;
         }
