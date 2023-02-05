@@ -332,6 +332,11 @@ void createfile()
         if(next_directory == NULL) {
             if(!access(directory, F_OK)) {
                 printf("File already exist!\n");
+                while(counter != 1)
+                {
+                    chdir("..");
+                    counter--;
+                }
                 free(directory);
                 free(next_directory);
                 free(new_address);
@@ -2234,7 +2239,6 @@ void replace()
         return;
     }
 
-
     getchar();
     scanf("%c", &x);
     // printf("x : i%ci\n", x);
@@ -2254,6 +2258,16 @@ void replace()
 
     // printf("exist : i%si\n", existing_str);
     fclose(filepointer);
+
+    //undo
+    char new_path[MAX_CONTENT] = { 0 };
+    strcpy(new_path, fileaddress(new_address));
+    strcat(new_path, "/");
+    strcat(new_path, namefile(new_address));
+    // printf("new : i%si\n", new_path);
+    showfile(new_path);
+    copyfile(new_path, new_address);
+    hidefile(new_path);
 
     filepointer = fopen(new_address, "r");
     if(filepointer == NULL) {
