@@ -13,7 +13,7 @@ git clone https://github.com/ashkntarivrdi/VIM-Project.git
 2. Compile the C program:
 
 ```bash
-cd project-vim
+cd VIM-project
 make
 ```
 
