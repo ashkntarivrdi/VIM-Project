@@ -1,4 +1,4 @@
-# Vim-like Text Editor
+# VIM Text Editor
 
 This project is a simplified text editor inspired by Vim. The editor is developed in C and offers basic text manipulation functionalities, mimicking some of Vim's command-line interface (CLI) features. This project is part of a course assignment to implement a file editing tool without a graphical user interface (GUI).
 
@@ -120,6 +120,3 @@ Use the commands as described above to create, modify, and interact with text fi
 
 Feel free to fork this repository and submit pull requests if you would like to contribute to improving this project.
 
-## License
-
-This project is licensed under the MIT License.
